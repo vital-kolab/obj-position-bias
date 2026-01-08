@@ -216,4 +216,9 @@ __marimo__/
 .streamlit/secrets.toml
 
 # ignore the contents of the data folder 
+data/
 data/*
+
+# ignore venv
+.venv/
+.venv/*
