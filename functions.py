@@ -11,3 +11,16 @@ def regression_indices(number_of_data_values,number_of_groups,test_group,SEED):
     test_indices = index[np.isin(index,groups[test_group])] # take the first array from the splits and find the indicies in that array in the group of overall indices, this creates a boolean index with the positions where the matching indices are as true, this is used to index all of the indices and create a test index array - these are the images that will be used for testing
     train_indices = index[np.logical_not(np.isin(index, test_indices))] # find the test indices in index and mark those positions with a boolean true, turn these values into boolean false, use this to index all the indices and get everything that is not a test index
     return train_indices, test_indices
+
+def human_reliability(data, runs = 20):
+    e_array = np.empty(runs)
+    for x in range(runs):
+        np.random.seed(x)
+        random_indices = np.random.choice(data.shape[1], size=data.shape[1], replace=False)
+        m_1 = np.nanmean(data[:,random_indices[0:(int((data.shape[1])/2))]], axis = 1)
+        m_2 = np.nanmean(data[:,random_indices[int(((data.shape[1])/2)):int((data.shape[1]))]], axis = 1)
+        r = pearsonr(m_1,m_2)[0]
+        e_array[x] = 2 * r / (1 + r) # applying spearman brown corrrelation splithalf reliability correction 
+    m_n = np.mean(e_array)
+    s_n = np.std(e_array)
+    return e_array,m_n, s_n
