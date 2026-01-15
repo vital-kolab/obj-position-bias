@@ -76,3 +76,17 @@ def reliability_filtering(neural_data, mean_neuron_correlation, metric = 0.5, tr
     else: 
         reliable_data = neural_data[:, b_index]
     return reliable_data
+
+def model_reliability_2(neural_data, regressor, test_idx): 
+    emp = np.empty(20)
+    for x in range(20):
+        np.random.seed(x)
+        random_indices_2 = np.random.choice(neural_data.shape[2], size=neural_data.shape[2], replace=False)
+        g_1 = np.nanmean(neural_data[:, :, random_indices_2[0:(int((neural_data.shape[2])/2))]], axis = 2)
+        g_2 = np.nanmean(neural_data[:, :, random_indices_2[int(((neural_data.shape[2])/2)):int((neural_data.shape[2]))]], axis = 2)
+        y_pred_1 = regressor.predict(g_1[test_idx,:])
+        y_pred_2 = regressor.predict(g_2[test_idx,:])
+        R_m = pearsonr(np.squeeze(y_pred_1),np.squeeze(y_pred_2))[0]
+        emp[x] = 2 * R_m / (1 + R_m)
+    rel = np.mean(emp)
+    return rel 
