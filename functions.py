@@ -1,3 +1,6 @@
+import numpy as np 
+from scipy.stats import pearsonr
+
 def convert_to_deg(px, im_size):
     delta = px - im_size/2
     ecc = delta*(8/im_size)
@@ -24,3 +27,52 @@ def human_reliability(data, runs = 20):
     m_n = np.mean(e_array)
     s_n = np.std(e_array)
     return e_array,m_n, s_n
+
+def check_normality(test_type,data1,data2=None):
+
+    # choose the test based on the number of data points
+    if len(data1) < 50:
+        from scipy.stats import shapiro
+        test = shapiro
+    
+    # conduct the test
+    if test_type == 'pairedt':
+        stat, p = test(data2-data1)
+        return p
+    
+    elif test_type == 'singlet':
+        stat, p = test(data1)
+        return p
+
+def neuron_reliability(data,runs = 20,sb_correct=True):
+    neurons_list = list(np.split(data, data.shape[1], axis=1))
+    e_array = np.empty((20,data.shape[1]))
+    for i in range(len(neurons_list)):
+        np.random.seed(i)
+        our_neuron = np.squeeze(neurons_list[i])
+        for x in range(runs):
+            random_indices = np.random.choice(data.shape[2], size=data.shape[2], replace=False)
+            m_1 = np.nanmean(our_neuron[:,random_indices[0:(int((data.shape[2])/2))]], axis = 1)
+            m_2 = np.nanmean(our_neuron[:,random_indices[int(((data.shape[2])/2)):int((data.shape[2]))]], axis = 1)
+            R = pearsonr(m_1,m_2)[0]
+            if sb_correct == True:
+                e_array[x][i] = 2 * R / (1 + R) # applying spearman brown corrrelation splithalf reliabiluty correction 
+            else:
+                e_array[x][i] = R
+    m_n = np.mean(e_array,axis = 0)
+    s_n = np.std(e_array,axis=0)
+    return m_n, s_n   
+
+def reliability_filtering_tb(neural_data, mean_neuron_correlation, metric = 0.5):
+    b_index = mean_neuron_correlation > metric # find all the neurons with mean reliability > 0.2 and create a boolean array with True for all these neurons
+    reliable_data = neural_data[:, :, :, b_index] # create a 3D matrix with only the data for the reliable neurons by indexing all the data with the positions of the reliable neurons in along the neuron axis
+    return reliable_data
+
+def reliability_filtering(neural_data, mean_neuron_correlation, metric = 0.5, trials = True):
+    b_index = mean_neuron_correlation > metric # find all the neurons with mean reliability > 0.2 and create a boolean array with True for all these neurons
+    # print(np.argwhere(~b_index))
+    if trials == True:
+        reliable_data = neural_data[:, b_index, :] # create a 3D matrix with only the data for the reliable neurons by indexing all the data with the positions of the reliable neurons in along the neuron axis
+    else: 
+        reliable_data = neural_data[:, b_index]
+    return reliable_data
