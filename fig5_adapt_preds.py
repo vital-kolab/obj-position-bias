@@ -8,7 +8,7 @@ import os
 
 # get the input regarding which model's features to adapt
 parser = argparse.ArgumentParser(
-    prog='adapt_zoo.py',
+    prog='fig5_adapt_preds.py',
     description='which model you want to adapt features of and get responses from adapted features',
     epilog='only one argument, which model?'
 )
@@ -17,18 +17,23 @@ parser.add_argument('--model', type=str, required=True, # the argument that spec
     choices=['resnet18', 'alexnet', 'vgg16', 'vitl32', 'simclr_resnet50'], 
     help='The model to run: resnet18, alexnet, vgg16, vitl32, simclr_resnet50')
 
+parser.add_argument('--outpath', type=str, required=True, # the argument that specifies the output path 
+    help='Where would you like your output to be stored?')
+
 args = parser.parse_args()
 
 model_name = args.model 
 
+output_path = args.outpath
+
 # load the tau values that we need to get to create the distribution from which we are drawing
-t_vals = np.load('tau_arr_s34_good_r2.npy')
+t_vals = np.load('data/tau_arr_s34_good_r2.npy')
 
 # load the model feature responses and regressors
-features = np.load(f'/home/eyakub/scratch/zoo_features/s5_{model_name}.npy')
-with open(f'/home/eyakub/scratch/zoo_decoders/{model_name}_xpos_decode_ecc.pickle','rb') as filex:
+features = np.load(f'data/s5_{model_name}.npy') # need these for adapting and decoding
+with open(f'data/{model_name}_xpos_decode_ecc.pickle','rb') as filex:
     xpos_regs = pickle.load(filex)
-with open(f'/home/eyakub/scratch/zoo_decoders/{model_name}_ypos_decode_ecc.pickle','rb') as filey:
+with open(f'data/{model_name}_ypos_decode_ecc.pickle','rb') as filey:
     ypos_regs = pickle.load(filey)
 
 # preprocess the features by zscoring and applying min-max scaling
@@ -51,10 +56,7 @@ def adapt_resp_decay(x, C, T):
 # (i.e., the first time point still has the same correlation as the un-adapted)
 times = np.arange(0,3050,50)
 
-# write a function that: 
-# 1) adapts the features to each time point, 
-# 2) predictions for each time point for each iteration, 
-# 3) outputs those predictions as a .npy file
+# function for adapting and making predictions
 def seasons_preds(feats, season_taus, xpos_regressors, ypos_regressors, n_img=40, n_folds=4, n_reps=100, n_time_steps=61):
     xpos_all_pred_array = np.empty((n_img,n_reps,n_time_steps,n_iterations))
     ypos_all_pred_array = np.empty((n_img,n_reps,n_time_steps,n_iterations))
@@ -77,21 +79,21 @@ def seasons_preds(feats, season_taus, xpos_regressors, ypos_regressors, n_img=40
     return avg_resp, avg_resp_sem, xpos_all_pred_array, ypos_all_pred_array
 
 # make sure that there is a folder for the adapted results of the model 
-if not os.path.exists(f'/home/eyakub/scratch/zoo_features_adapted'):
-    os.makedirs(f'/home/eyakub/scratch/zoo_features_adapted')
+if not os.path.exists(f'{output_path}'):
+    os.makedirs(f'{output_path}')
 
 # get the position predictions following adaptation to S3
 s3_avg_resp, s3_avg_resp_sem, s3_xpos_preds, s3_ypos_preds = seasons_preds(features,feats_ts3,xpos_regs,ypos_regs)
 
-np.save(f'/home/eyakub/scratch/zoo_features_adapted/{model_name}_s3adapt_avg_resp_ecc.npy', s3_avg_resp)
-np.save(f'/home/eyakub/scratch/zoo_features_adapted/{model_name}_s3adapt_avg_resp_sem_ecc.npy', s3_avg_resp_sem)
-np.save(f'/home/eyakub/scratch/zoo_predictions/{model_name}_s3adapt_xpos_preds_ecc.npy', s3_xpos_preds)
-np.save(f'/home/eyakub/scratch/zoo_predictions/{model_name}_s3adapt_ypos_preds_ecc.npy', s3_ypos_preds)
+np.save(f'{ouput_path}/{model_name}_s3adapt_avg_resp_ecc.npy', s3_avg_resp)
+np.save(f'{output_path}/{model_name}_s3adapt_avg_resp_sem_ecc.npy', s3_avg_resp_sem)
+np.save(f'{output_path}/{model_name}_s3adapt_xpos_preds_ecc.npy', s3_xpos_preds)
+np.save(f'{output_path}/{model_name}_s3adapt_ypos_preds_ecc.npy', s3_ypos_preds)
 
 # get thr position predictions following adaptation to S4
 s4_avg_resp, s4_avg_resp_sem, s4_xpos_preds, s4_ypos_preds = seasons_preds(features,feats_ts4,xpos_regs,ypos_regs)
 
-np.save(f'/home/eyakub/scratch/zoo_features_adapted/{model_name}_s4adapt_avg_resp_ecc.npy', s4_avg_resp)
-np.save(f'/home/eyakub/scratch/zoo_features_adapted/{model_name}_s4adapt_avg_resp_sem_ecc.npy', s4_avg_resp_sem)
-np.save(f'/home/eyakub/scratch/zoo_predictions/{model_name}_s4adapt_xpos_preds_ecc.npy', s4_xpos_preds)
-np.save(f'/home/eyakub/scratch/zoo_predictions/{model_name}_s4adapt_ypos_preds_ecc.npy', s4_ypos_preds)
+np.save(f'{output_path}/{model_name}_s4adapt_avg_resp_ecc.npy', s4_avg_resp)
+np.save(f'{output_path}/{model_name}_s4adapt_avg_resp_sem_ecc.npy', s4_avg_resp_sem)
+np.save(f'{output_path}/{model_name}_s4adapt_xpos_preds_ecc.npy', s4_xpos_preds)
+np.save(f'{output_path}/{model_name}_s4adapt_ypos_preds_ecc.npy', s4_ypos_preds)

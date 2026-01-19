@@ -9,8 +9,8 @@ import os
 # get inputs
 parser = argparse.ArgumentParser( # make the parser
     prog='fig1_preds.py', 
-    description='choose which model you want each node to run', 
-    epilog='only one argument, which model you want?') 
+    description='choose which model you want each node to run and where you want the output to be stored', 
+    epilog='Which model you want? Where to store output?') 
 
 parser.add_argument('--model', type=str, required=True, # the argument that specifies the model 
     choices=['resnet18', 'alexnet', 'vgg16', 'vitl32', 'simclr_resnet50','resnet50_ssl','resnet50_robust_eps3'], 

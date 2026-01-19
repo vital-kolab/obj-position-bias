@@ -64,7 +64,7 @@ parser = argparse.ArgumentParser(
 
 parser.add_argument('--start', type=int, required=True) # the argument that specifies the number of subsamples to test 
 parser.add_argument('--stop', type=int, required=True)
-parser.add_argument('--outpath', type=str, required=True, # the argument that specifies the model 
+parser.add_argument('--outpath', type=str, required=True, # the argument that specifies the output path 
     help='Where would you like your output to be stored?')
 
 args = parser.parse_args()
