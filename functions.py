@@ -3,7 +3,7 @@ from scipy.stats import pearsonr
 
 def convert_to_deg(px, im_size):
     delta = px - im_size/2
-    ecc = delta*(8/im_size)
+    ecc = delta*(16/im_size)
     return ecc 
 
 def regression_indices(number_of_data_values,number_of_groups,test_group,SEED):
