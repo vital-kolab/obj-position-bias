@@ -1,8 +1,8 @@
 #!/bin/bash
-#SBATCH --job-name=fig5_adapt_preds
-#SBATCH --nodes=5
-#SBATCH --ntasks=5
-#SBATCH --mem=80G
+#SBATCH --job-name=fig5_convrnn
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --mem=32G
 #SBATCH --time=01:00:00
 #SBATCH --output=logs/%x_%j.out
 #SBATCH --error=logs/%x_%j.err
@@ -29,11 +29,5 @@ source $ENV_PATH/bin/activate
 echo "Env has been activated"
 pip freeze
 
-# run the different models on different nodes - & makes it so that all the models are run in the background on separate nodes
-srun --exclusive -N1 -n1 python fig5_adapt_preds.py --model resnet18 --outpath $OUTPUT_PATH &
-srun --exclusive -N1 -n1 python fig5_adapt_preds.py --model alexnet --outpath $OUTPUT_PATH &
-srun --exclusive -N1 -n1 python fig5_adapt_preds.py --model vgg16 --outpath $OUTPUT_PATH &
-srun --exclusive -N1 -n1 python fig5_adapt_preds.py --model vitl32 --outpath $OUTPUT_PATH &
-srun --exclusive -N1 -n1 python fig5_adapt_preds.py --model simclr_resnet50 --outpath $OUTPUT_PATH &
-
-wait
+# run the python script
+python fig5_convrnn.py --outpath $OUTPUT_PATH

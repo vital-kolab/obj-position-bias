@@ -6,7 +6,7 @@
 #SBATCH --time=00:30:00
 #SBATCH --output=logs/%x_%j.out
 #SBATCH --error=logs/%x_%j.err
-#SBATCH --mail-user=eyakub@my.yorku.ca
+#SBATCH --mail-user=your.email.here@email.com
 #SBATCH --mail-type=ALL
 
 # NOTE: this job script is intended for Compute Canada, please adapt above and below to your system 
@@ -30,4 +30,4 @@ echo "Env has been activated"
 pip freeze
 
 # run the actual python script
-python fig5_preds.py
+python fig5_preds.py --outpath $OUTPUT_PATH
