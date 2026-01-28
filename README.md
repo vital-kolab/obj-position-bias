@@ -33,4 +33,19 @@ cd util_code
 setup.sh
 ```
 
+## 📀 Data and Preparation
+
+This project assumes access to the data stored here (INSERT LINK HERE). For best compatibility, please store the **data** folder within this repository (i.e., `../obj-position-bias/data`).
+
+Within **data** you will have access to:
+
+  1. **Macaque IT responses**: population responses for N images.
+     * `/neural` shape for m1 `(n_images, n_reps, n_time, n_neurons)` and for m2 `(n_images, n_neurons, n_reps)`
+  3. **Model features**: precomputed ANN activations for the same images.
+     * `/convrnn_features` shape `(n_images, n_units)`
+     * `/slowfast_features` shape `(n_images, n_units, n_time, H, W)`
+     * `/static_img_model_features` shape `(n_images, n_units)`
+  5. **Human behavior**: image-level object position estimates.
+     * `/human` shape `(n_images, n_trials)`
+
 
