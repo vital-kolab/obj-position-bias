@@ -2,7 +2,7 @@
 
 This repo contains the codebase accompanying the paper: 
 
-**The macaque IT cortex but not current artificial vision networks encode object position in perceptually aligned coordinates**, Yakubovskaya et al., *Current Biology*, 2026 (INSERT LINK HERE)
+**The macaque IT cortex but not current artificial vision networks encode object position in perceptually aligned coordinates**, Yakubovskaya et al., *Journal Name*, 2026 (INSERT LINK HERE)
 
 This repository supports analyses comparing the effect of motion adaptation on estimates of object position by humans, readout from macaque inferior temporal (IT) cortex, and predictions from artificial neural networks (ANNs).
 
@@ -50,9 +50,21 @@ Within **data** you will have access to:
 
 ## 🔁 Reproducing paper figures
 
-Each `/figure_notebooks/figureX.ipynb` notebook reproduces the corresponding figure from the paper. Notebooks expect the data assets described above. 
+Each `/figure_notebooks/figureX.ipynb` notebook reproduces the corresponding figure from the paper. Notebooks expect the data assets described above. You may need to edit paths if the **data** folder is not stored this repository (i.e., `../obj-position-bias/data`).
+
+* **Figure 1**: Object position information is explicitly represented in macaque IT cortex
+* **Figure 2**: Motion adaptation reliably induces systematic position biases in human observers
+* **Figure 3**: Motion adaptation reliably induces systematic changes in macaque IT representations of images and biases object position predictions
+* **Figure 4**: Neuralizing ANN features with IT-derived transformations induces position biases.
+* **Figure 5**: Implementing intrinsic suppression dynamics in ANN units fails to recapitulate IT-like position biases.
 
 ## 📌 Status
 
+This codebase accompanies the paper:
 
+**Yakubovskaya, E., Ramezanpour, H., Dunnhofer, M., & Kar., K. *The macaque IT cortex but not current artificial vision networks encode object position in perceptually aligned coordinates*. (INSERT REST OF CITATION HERE)**
+
+If you use this repository or ideas from it, please cite the paper and link to this repo.
+
+License: **MIT** (see [LICENSE](#lisence))
 
