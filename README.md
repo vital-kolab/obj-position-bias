@@ -66,5 +66,5 @@ This codebase accompanies the paper:
 
 If you use this repository or ideas from it, please cite the paper and link to this repo.
 
-License: **MIT** (see [LICENSE](#LICENSE))
+License: **MIT** (see `LICENSE`)
 
