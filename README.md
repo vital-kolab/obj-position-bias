@@ -50,7 +50,7 @@ Within **data** you will have access to:
 
 ## 🔁 Reproducing paper figures
 
-Each `/figure_notebooks/figureX.ipynb` notebook reproduces the corresponding figure from the paper. Notebooks expect the data assets described above. If paths differ, change the config cell at the top of each notebook.
+Each `/figure_notebooks/figureX.ipynb` notebook reproduces the corresponding figure from the paper. Notebooks expect the data assets described above. 
 
 ## 📌 Status
 
