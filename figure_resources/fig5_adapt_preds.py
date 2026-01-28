@@ -3,8 +3,12 @@ import numpy as np
 import pandas as pd
 from scipy.stats import pearsonr, zscore, truncnorm, sem
 import pickle
-from functions import regression_indices, convert_to_deg
 import os
+
+import sys
+sys.path.append('../util_code')
+
+from functions import regression_indices, convert_to_deg
 
 # get the input regarding which model's features to adapt
 parser = argparse.ArgumentParser(
@@ -27,13 +31,13 @@ model_name = args.model
 output_path = args.outpath
 
 # load the tau values that we need to get to create the distribution from which we are drawing
-t_vals = np.load('data/tau_arr_s34_good_r2.npy')
+t_vals = np.load('../data/tau_arr_s34_good_r2.npy')
 
 # load the model feature responses and regressors
-features = np.load(f'data/s5_{model_name}.npy') # need these for adapting and decoding
-with open(f'data/{model_name}_xpos_decode_ecc.pickle','rb') as filex:
+features = np.load(f'../data/static_img_model_features/s5_{model_name}.npy') # need these for adapting and decoding
+with open(f'../data/{model_name}_xpos_decode_ecc.pickle','rb') as filex:
     xpos_regs = pickle.load(filex)
-with open(f'data/{model_name}_ypos_decode_ecc.pickle','rb') as filey:
+with open(f'../data/{model_name}_ypos_decode_ecc.pickle','rb') as filey:
     ypos_regs = pickle.load(filey)
 
 # preprocess the features by zscoring and applying min-max scaling

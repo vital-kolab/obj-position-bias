@@ -13,7 +13,7 @@ source $ENV_PATH/.obj_pos_venv/bin/activate
 
 echo "Installing requirements"
 
-pip install --no-index -r $WORKING_PATH/requirements.txt
+pip install --no-index -r $WORKING_PATH/util_code/requirements.txt
 
 echo "Env has been set up"
 

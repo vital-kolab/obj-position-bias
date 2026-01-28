@@ -12,7 +12,7 @@
 # NOTE: this job script is intended for Compute Canada, please adapt above and below to your system 
 
 # define paths
-WORKING_PATH="/home/eyakub/projects/def-kohitij/eyakub/obj-position-bias" # adjust for your system
+WORKING_PATH="/home/eyakub/projects/def-kohitij/eyakub/obj-position-bias/figure_resources" # adjust for your system
 ENV_PATH="/home/eyakub/scratch/.obj_pos_venv" # adjust for your system
 OUTPUT_PATH="/home/eyakub/projects/def-kohitij/eyakub/obj-position-bias/data"
 

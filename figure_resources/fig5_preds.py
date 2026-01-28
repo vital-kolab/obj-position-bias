@@ -5,10 +5,14 @@
 import argparse
 import numpy as np
 import pandas as pd
-from functions import regression_indices, convert_to_deg
 from sklearn.linear_model import Ridge, RidgeCV
 from scipy.stats import zscore
 import pickle
+
+import sys
+sys.path.append('../util_code')
+
+from functions import regression_indices, convert_to_deg
 
 # get output_path
 parser = argparse.ArgumentParser( # make the parser
@@ -46,7 +50,7 @@ def train_regressors(feats, pos, n_img = 40, n_folds = 4, n_reps = 100, alpha_va
 # load the ground truth center positions in pixel space 
 human_im_size = 268.51895786308
 gt_im_size = 256
-df = pd.read_csv('data/mae_s5_coordinates.csv') # position data
+df = pd.read_csv('../data/mae_s5_coordinates.csv') # position data
 xpos = np.squeeze(df['center_x'].values.reshape(-1,1))*(human_im_size/gt_im_size) # convert to the dimensions of the image that the humans made estimates on
 ypos = np.squeeze(df['center_y'].values.reshape(-1,1))*(human_im_size/gt_im_size)
 
@@ -58,7 +62,7 @@ keys=['resnet18', 'alexnet', 'vgg16', 'vitl32', 'simclr_resnet50']
 
 for model_key in keys:
 
-    features = np.load(f'data/s5_{model_key}.npy')
+    features = np.load(f'../data/static_img_model_features/s5_{model_key}.npy')
 
     # preprocess the features by zscoring and applying min-max scaling
     features = zscore(features, axis=1)

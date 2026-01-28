@@ -31,6 +31,9 @@ from sklearn.linear_model import Ridge, RidgeCV
 from scipy.stats import zscore
 import pickle
 
+import sys
+sys.path.append('../util_code')
+
 from functions import regression_indices
 
 # define the function to train the regressors and get the dictionary of trained regressors as well as predictions
@@ -54,11 +57,11 @@ def train_regressors(feats, pos, n_img = 640, n_folds = 10, n_reps = 100, alpha_
     return regressors, pred_array
 
 # load the ground truth center positions
-df = pd.read_csv('data/meta_hvm640.csv') # position data
+df = pd.read_csv('../data/meta_hvm640.csv') # position data
 xpos = np.squeeze(df['xpos'].values.reshape(-1,1))
 ypos = np.squeeze(df['ypos'].values.reshape(-1,1))
 
-features = np.load(f'data/hvm640_{model_key}.npy')
+features = np.load(f'../data/static_img_model_features/hvm640_{model_key}.npy')
 
 # preprocess the features by zscoring and applying min-max scaling
 features = zscore(features, axis=1)

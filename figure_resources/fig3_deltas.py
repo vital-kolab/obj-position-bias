@@ -5,9 +5,13 @@ import argparse
 import h5py
 import pandas as pd
 import numpy as np
-from functions import reliability_filtering, regression_indices, convert_to_deg
 from scipy.stats import zscore, shapiro, levene
 from sklearn.linear_model import Ridge, RidgeCV
+
+import sys
+sys.path.append('../util_code')
+
+from functions import reliability_filtering, regression_indices, convert_to_deg
 
 # functions
 def train_regs(neural, pos_vals, n_img=40, n_runs=100, n_folds=4, alpha_values = [0.01, 0.1, 1, 10, 100]):
@@ -76,12 +80,12 @@ n_subs = int((n_stop - n_start)/10)
 output_path = args.outpath
 
 # import the neural data 
-p_file_s5 = h5py.File('data/230801.pico.rsvp.gratingsAdap_s5.experiment_psth_raw.h5','r')
-p_file_s3 = h5py.File('data/230801.pico.rsvp.gratingsAdap_s3.experiment_psth_raw.h5','r')
-p_file_s4 = h5py.File('data/230801.pico.rsvp.gratingsAdap_s4.experiment_psth_raw.h5','r')
-k_file_s5 = h5py.File('data/kenny_season5.mat','r')
-k_file_s3 = h5py.File('data/kenny_season3.mat','r')
-k_file_s4 = h5py.File('data/kenny_season4.mat','r')
+p_file_s5 = h5py.File('../data/neural/230801.m1.rsvp.gratingsAdap_s5.experiment_psth_raw.h5','r')
+p_file_s3 = h5py.File('../data/neural/230801.m1.rsvp.gratingsAdap_s3.experiment_psth_raw.h5','r')
+p_file_s4 = h5py.File('../data/neural/230801.m1.rsvp.gratingsAdap_s4.experiment_psth_raw.h5','r')
+k_file_s5 = h5py.File('../data/neural/m2_season5.mat','r')
+k_file_s3 = h5py.File('../data/neural/m2_season3.mat','r')
+k_file_s4 = h5py.File('../data/neural/m2_season4.mat','r')
 
 p_rates_s5 = p_file_s5['/psth'][:]
 p_rates_s3 = p_file_s3['/psth'][:]
@@ -96,7 +100,7 @@ s3_neural_pico = np.transpose(np.nanmean(p_rates_s3[:,:,337:347,:],axis=2), (0,2
 s4_neural_pico = np.transpose(np.nanmean(p_rates_s4[:,:,337:347,:],axis=2), (0,2,1)) 
 
 # concatenate and filter the combined neural data 
-rel = np.load('data/combined_s5_rel.npy')
+rel = np.load('../data/combined_s5_rel.npy')
 
 s5_neural = reliability_filtering(np.concatenate((s5_neural_pico,k_rates_s5),axis=1),rel,metric=0.2)
 s3_neural = reliability_filtering(np.concatenate((s3_neural_pico,k_rates_s3),axis=1),rel,metric=0.2)
@@ -114,7 +118,7 @@ s4_neural_for_preds = np.nanmean(s4_neural,axis=2)
 # load the position data (pixel space)
 human_im_size = 268.51895786308
 gt_im_size = 256
-df = pd.read_csv('data/mae_s5_coordinates.csv') # position data
+df = pd.read_csv('../data/mae_s5_coordinates.csv') # position data
 pos = np.squeeze(df['center_x'].values.reshape(-1,1))*(human_im_size/gt_im_size) # convert to the dimensions of the image that the humans made estimates on
 pos = convert_to_deg(pos, human_im_size) # convert labels to eccentricity
 

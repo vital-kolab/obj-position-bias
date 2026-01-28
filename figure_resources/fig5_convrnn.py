@@ -10,6 +10,9 @@ import pandas as pd
 from scipy.stats import zscore
 import pickle
 
+import sys
+sys.path.append('../util_code')
+
 from functions import regression_indices, convert_to_deg
 
 # get output_path
@@ -67,14 +70,14 @@ def seasons_preds(feats, xpos_regressors, ypos_regressors, n_img=40, n_folds=4, 
 
 
 # load and prepare the features 
-s5 = prep_feats(np.load('data/convrnn_features/s5_convrnn.npy'))
-s3 = prep_feats(np.load('data/convrnn_features/s3_convrnn.npy'))
-s4 = prep_feats(np.load('data/convrnn_features/s4_convrnn.npy'))
+s5 = prep_feats(np.load('../data/convrnn_features/s5_convrnn.npy'))
+s3 = prep_feats(np.load('../data/convrnn_features/s3_convrnn.npy'))
+s4 = prep_feats(np.load('../data/convrnn_features/s4_convrnn.npy'))
 
 # load the ground truth center positions in pixel space in ecc coordinates
 human_im_size = 268.51895786308
 gt_im_size = 256
-df = pd.read_csv('data/mae_s5_coordinates.csv') # position data
+df = pd.read_csv('../data/mae_s5_coordinates.csv') # position data
 xpos = np.squeeze(df['center_x'].values.reshape(-1,1))*(human_im_size/gt_im_size) # convert to the dimensions of the image that the humans made estimates on
 xpos = convert_to_deg(xpos,human_im_size)
 ypos = np.squeeze(df['center_y'].values.reshape(-1,1))*(human_im_size/gt_im_size)
@@ -84,19 +87,19 @@ ypos = convert_to_deg(ypos,human_im_size)
 xpos_regs, xpos_preds = train_regressors(s5, xpos)
 
 # output the predictions for x-position
-np.save(f'{output_path}/convrnn_predictions/convrnn_s5_xpos_preds_ecc.npy',xpos_preds)
+np.save(f'{output_path}/convrnn_s5_xpos_preds_ecc.npy',xpos_preds)
 
 # get s5 regressors and predictions for y pos
 ypos_regs, ypos_preds = train_regressors(s5, ypos)
 
 # output regressors and predictions for y 
-np.save(f'{output_path}/convrnn_predictions/convrnn_s5_ypos_preds_ecc.npy',ypos_preds)
+np.save(f'{output_path}/convrnn_s5_ypos_preds_ecc.npy',ypos_preds)
 
 # get predictions from s3 and s4 features 
 s3_xpos_preds, s3_ypos_preds = seasons_preds(s3,xpos_regs,ypos_regs)
-np.save(f'{output_path}/convrnn_predictions/convrnn_s3_xpos_preds_ecc.npy', s3_xpos_preds)
-np.save(f'{output_path}/convrnn_predictions/convrnn_s3_ypos_preds_ecc.npy', s3_ypos_preds)
+np.save(f'{output_path}/convrnn_s3_xpos_preds_ecc.npy', s3_xpos_preds)
+np.save(f'{output_path}/convrnn_s3_ypos_preds_ecc.npy', s3_ypos_preds)
 
 s4_xpos_preds, s4_ypos_preds = seasons_preds(s4,xpos_regs,ypos_regs)
-np.save(f'{output_path}/convrnn_predictions/convrnn_s4_xpos_preds_ecc.npy', s4_xpos_preds)
-np.save(f'{output_path}/convrnn_predictions/convrnn_s4_ypos_preds_ecc.npy', s4_ypos_preds)
+np.save(f'{output_path}/convrnn_s4_xpos_preds_ecc.npy', s4_xpos_preds)
+np.save(f'{output_path}/convrnn_s4_ypos_preds_ecc.npy', s4_ypos_preds)
