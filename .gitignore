@@ -222,3 +222,6 @@ data/*
 # ignore venv
 .venv/
 .venv/*
+
+# ignore the data folder 
+data.tar.gz
