@@ -80,31 +80,28 @@ n_subs = int((n_stop - n_start)/10)
 output_path = args.outpath
 
 # import the neural data 
-p_file_s5 = h5py.File('../data/neural/230801.m1.rsvp.gratingsAdap_s5.experiment_psth_raw.h5','r')
-p_file_s3 = h5py.File('../data/neural/230801.m1.rsvp.gratingsAdap_s3.experiment_psth_raw.h5','r')
-p_file_s4 = h5py.File('../data/neural/230801.m1.rsvp.gratingsAdap_s4.experiment_psth_raw.h5','r')
-k_file_s5 = h5py.File('../data/neural/m2_season5.mat','r')
-k_file_s3 = h5py.File('../data/neural/m2_season3.mat','r')
-k_file_s4 = h5py.File('../data/neural/m2_season4.mat','r')
+m1_file_s5 = h5py.File('../data/neural/230801.m1.rsvp.gratingsAdap_s5.experiment_psth_raw.h5','r')
+m2_file_s3 = h5py.File('../data/neural/230801.m1.rsvp.gratingsAdap_s3.experiment_psth_raw.h5','r')
+m1_file_s4 = h5py.File('../data/neural/230801.m1.rsvp.gratingsAdap_s4.experiment_psth_raw.h5','r')
 
-p_rates_s5 = p_file_s5['/psth'][:]
-p_rates_s3 = p_file_s3['/psth'][:]
-p_rates_s4 = p_file_s4['/psth'][:]
-k_rates_s5 = k_file_s5['/rates'][:]
-k_rates_s3 = k_file_s3['/kenny_s3'][:]
-k_rates_s4 = k_file_s4['/kenny_s4'][:]
+m1_rates_s5 = m1_file_s5['/psth'][:]
+m1_rates_s3 = m1_file_s3['/psth'][:]
+m1_rates_s4 = m1_file_s4['/psth'][:]
+m2_rates_s5 = np.load('../data/neural/m2_season5.npy')
+m2_rates_s3 = np.load('../data/neural/m2_season3.npy')
+m2_rates_s4 = np.load('../data/neural/m2_season4.npy')
 
-# process Pico's neural data 
-s5_neural_pico = np.transpose(np.nanmean(p_rates_s5[:,:,7:17,:],axis=2), (0,2,1))
-s3_neural_pico = np.transpose(np.nanmean(p_rates_s3[:,:,337:347,:],axis=2), (0,2,1)) 
-s4_neural_pico = np.transpose(np.nanmean(p_rates_s4[:,:,337:347,:],axis=2), (0,2,1)) 
+# process M1 neural data 
+s5_neural_m1 = np.transpose(np.nanmean(m1_rates_s5[:,:,7:17,:],axis=2), (0,2,1))
+s3_neural_m1 = np.transpose(np.nanmean(m1_rates_s3[:,:,337:347,:],axis=2), (0,2,1)) 
+s4_neural_m1 = np.transpose(np.nanmean(m1_rates_s4[:,:,337:347,:],axis=2), (0,2,1)) 
 
 # concatenate and filter the combined neural data 
 rel = np.load('../data/combined_s5_rel.npy')
 
-s5_neural = reliability_filtering(np.concatenate((s5_neural_pico,k_rates_s5),axis=1),rel,metric=0.2)
-s3_neural = reliability_filtering(np.concatenate((s3_neural_pico,k_rates_s3),axis=1),rel,metric=0.2)
-s4_neural = reliability_filtering(np.concatenate((s4_neural_pico,k_rates_s4),axis=1),rel,metric=0.2)
+s5_neural = reliability_filtering(np.concatenate((s5_neural_m1,m2_rates_s5),axis=1),rel,metric=0.2)
+s3_neural = reliability_filtering(np.concatenate((s3_neural_m1,m2_rates_s3),axis=1),rel,metric=0.2)
+s4_neural = reliability_filtering(np.concatenate((s4_neural_m1,m2_rates_s4),axis=1),rel,metric=0.2)
 
 # zscore the data and process for making predictions
 s5_neural = zscore(s5_neural,axis=1)
