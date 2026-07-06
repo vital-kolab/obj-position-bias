@@ -225,3 +225,4 @@ data/*
 
 # ignore the data folder 
 data.tar.gz
+neural.zip
